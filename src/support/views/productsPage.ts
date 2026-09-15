@@ -1,11 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 
 export class ProductsPage {
-  readonly page: Page;
-
-  constructor(page: Page) {
-    this.page = page;
-  }
+  constructor(readonly page: Page) {}
 
   async visit(): Promise<void> {
     await this.page.goto('/inventory.html');
