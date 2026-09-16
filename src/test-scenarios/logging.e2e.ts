@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 import { users } from '../support/users.ts';
 import test from '../lib/baseTest.ts';
 
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.describe('Login protection for invalid cases', () => {
   test('user cannot log in with invalid credentials @regression', async ({
     loginPage,

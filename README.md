@@ -44,6 +44,28 @@ npx playwright show-report
 npx tsc --noEmit
 ```
 
+## Authentication state
+
+Product and cart scenarios do not repeat the UI login flow. Before those tests run, the `setup` Playwright project executes `auth.setup.ts` once:
+
+1. It signs in with `STANDARD_USER_USERNAME` and `STANDARD_USER_PASSWORD`.
+2. It saves the authenticated browser state to `playwright/.auth/standard-user.json`.
+3. The Chromium project loads that state for each product and cart test.
+
+Running the complete suite handles this automatically:
+
+```bash
+npx playwright test
+```
+
+To regenerate the state only, for example after credentials change or the session expires, run:
+
+```bash
+npx playwright test --project=setup
+```
+
+The auth-state file contains session information and is ignored by Git. Login scenarios explicitly start without saved authentication so they continue to test the real sign-in flow.
+
 ## Project structure
 
 ```text
@@ -54,9 +76,12 @@ src/
 ├── support/
 │   ├── users.ts           # Environment-backed test users
 │   └── views/             # Page Object Model classes
+│       ├── cartPage.ts
 │       ├── loginPage.ts
 │       └── productsPage.ts
 └── test-scenarios/        # End-to-end test specifications
+    ├── auth.setup.ts       # Creates standard-user auth state
+    ├── cart.e2e.ts
     ├── logging.e2e.ts
     └── products.e2e.ts
 ```

@@ -1,18 +1,12 @@
 import { expect } from '@playwright/test';
 import test from '../lib/baseTest.ts';
-import { users } from '../support/users.ts';
 
 test.describe('Cart', () => {
-  test('standard user can add every product to the cart', async ({
-    loginPage,
+  test('authenticated user can add every product to the cart', async ({
     productsPage,
   }) => {
-    await test.step('Log in as the standard user', async () => {
-      await loginPage.visit();
-      await loginPage.submitLogin(
-        users.standard.username,
-        users.standard.password,
-      );
+    await test.step('Open the products page', async () => {
+      await productsPage.visit();
     });
 
     await test.step('Verify the products page is loaded', async () => {
