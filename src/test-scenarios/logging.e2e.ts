@@ -33,11 +33,31 @@ test.describe('Login protection for invalid cases', () => {
       );
     });
     await test.step('There should be info for user about Lock', async () => {
-
-    await expect(
-      loginPage.errorBanner).toContainText(
+      await expect(loginPage.errorBanner).toContainText(
         'Sorry, this user has been locked out',
       );
+    });
   });
+});
+
+test.describe('Successful login', () => {
+  test('standard user is redirected to the products page', async ({
+    loginPage,
+    productsPage,
+  }) => {
+    await test.step('Log in as the standard user', async () => {
+      await loginPage.visit();
+      await loginPage.submitLogin(
+        users.standard.username,
+        users.standard.password,
+      );
+    });
+
+    await test.step('Verify the products page is displayed', async () => {
+      await expect(
+        productsPage.title,
+        'Expected a successful login to display the Products page.',
+      ).toHaveText('Products');
+    });
   });
 });

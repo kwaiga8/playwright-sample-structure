@@ -1,4 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
+import { CartPage } from './cartPage.ts';
 
 export class ProductsPage {
   constructor(readonly page: Page) {}
@@ -19,6 +20,10 @@ export class ProductsPage {
     return this.page.locator('[data-test="inventory-item"]');
   }
 
+  async getProductCount(): Promise<number> {
+    return this.inventoryItems.count();
+  }
+
   get cartLink(): Locator {
     return this.page.locator('[data-test="shopping-cart-link"]');
   }
@@ -29,6 +34,10 @@ export class ProductsPage {
 
   get sortSelect(): Locator {
     return this.page.locator('[data-test="product-sort-container"]');
+  }
+
+  get addToCartButtons(): Locator {
+    return this.page.locator('button[data-test^="add-to-cart-"]');
   }
 
   productItem(productName: string): Locator {
@@ -43,7 +52,14 @@ export class ProductsPage {
       .click();
   }
 
-  async openCart(): Promise<void> {
+  async addAllProductsToCart(): Promise<void> {
+    while ((await this.addToCartButtons.count()) > 0) {
+      await this.addToCartButtons.first().click();
+    }
+  }
+
+  async openCart(): Promise<CartPage> {
     await this.cartLink.click();
+    return new CartPage(this.page);
   }
 }
